@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kids Learning Game</title>
+    <style>
+        :root {
+            --primary-color: #FF5E78;
+            --secondary-color: #58B4FF;
+            --accent-color: #FFDE59;
+            --success-color: #5CDB95;
+            --bg-color: #F9F7FF;
+            --text-color: #333366;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        header {
+            text-align: center;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 0 0 2rem 2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .menu {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .menu-btn {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 1rem;
+            background-color: var(--secondary-color);
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 200px;
+            max-width: 300px;
+            text-align: center;
+        }
+        
+        .menu-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+        
+        .menu-btn.active {
+            background-color: var(--primary-color);
+            transform: translateY(-5px);
+        }
+        
+        .game-area {
+            background-color: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            min-height: 400px;
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .letter-grid, .number-grid, .hindi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .letter-card, .number-card, .hindi-card {
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--accent-color);
+            border-radius: 1rem;
+            font-size: 2.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            user-select: none;
+        }
+        
+        .letter-card:hover, .number-card:hover, .hindi-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .sub-menu {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .sub-menu-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .sub-menu-btn:hover, .sub-menu-btn.active {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            transform: scale(1.1);
+            background-color: var(--secondary-color);
+        }
+        
+        .title-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .title-area h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            text-align: center;
+        }
+        
+        .audio-controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+        
+        .mute-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 2rem;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .mute-btn:hover {
+            background-color: var(--primary-color);
+        }
+        
+        .info-text {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            color: var(--secondary-color);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 1rem;
+            margin-top: 1rem;
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .letter-grid, .number-grid, .hindi-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+                gap: 0.8rem;
+            }
+            
+            .letter-card, .number-card, .hindi-card {
+                height: 80px;
+                font-size: 2rem;
+            }
+            
+            .game-area {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .letter-grid, .number-grid, .hindi-grid {
+                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+                gap: 0.6rem;
+            }
+            
+            .letter-card, .number-card, .hindi-card {
+                height: 60px;
+                font-size: 1.5rem;
+            }
+            
+            .game-area {
+                padding: 1rem;
+                border-radius: 1rem;
+            }
+            
+            .menu-btn {
+                min-width: 130px;
+                padding: 0.8rem 1rem;
+                font-size: 1rem;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+        
+        .bounce {
+            animation: bounce 0.5s;
+        }
+        
+        .welcome {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            animation: fadeIn 1s ease;
+        }
+        
+        .welcome img {
+            max-width: 200px;
+            margin-bottom: 2rem;
+        }
+        
+        .welcome h2 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .welcome p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 80%;
+        }
+        
+        .welcome button {
+            padding: 1rem 2rem;
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            border-radius: 2rem;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .welcome button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f2f2f2;
+            position: absolute;
+            left: 50%;
+            animation: fall 5s ease-in infinite;
+            z-index: -1;
+        }
+        
+        @keyframes fall {
+            0% {
+                opacity: 1;
+                top: -10px;
+                transform: translateX(0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                top: 100vh;
+                transform: translateX(100px) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌈 Kids Learning Adventure 🚀</h1>
+            <p>Learn alphabets, numbers and Hindi with fun!</p>
+        </header>
+        
+        <div class="menu">
+            <button class="menu-btn" data-section="welcome">Home</button>
+            <button class="menu-btn" data-section="english-alphabet">English Alphabet</button>
+            <button class="menu-btn" data-section="numbers">Numbers</button>
+            <button class="menu-btn" data-section="hindi-alphabet">Hindi Alphabet</button>
+        </div>
+        
+        <div class="game-area">
+            <!-- Welcome Section -->
+            <div class="section welcome active" id="welcome">
+                <img src="https://i.gifer.com/origin/f0/f0f60dad139864d5209732cc7c9d7dda_w200.gif" alt="Learning mascot" />
+                <h2>Welcome to the Learning Adventure!</h2>
+                <p>Click on the menu buttons above to start learning English alphabets, numbers up to 20, and Hindi alphabets with fun sounds!</p>
+                <button class="start-btn">Let's Start Learning!</button>
+            </div>
+            
+            <!-- English Alphabet Section -->
+            <div class="section" id="english-alphabet">
+                <div class="title-area">
+                    <h2>English Alphabet</h2>
+                </div>
+                <div class="sub-menu">
+                    <button class="sub-menu-btn active" data-type="capital">Capital Letters</button>
+                    <button class="sub-menu-btn" data-type="small">Small Letters</button>
+                </div>
+                <div class="letter-grid capital-letters active-grid">
+                    <!-- Capital letters will be inserted here by JavaScript -->
+                </div>
+                <div class="letter-grid small-letters">
+                    <!-- Small letters will be inserted here by JavaScript -->
+                </div>
+                <div class="info-text">Click on any letter to hear its sound</div>
+                <div class="audio-controls">
+                    <button class="mute-btn">🔊 Sound On</button>
+                </div>
+            </div>
+            
+            <!-- Numbers Section -->
+            <div class="section" id="numbers">
+                <div class="title-area">
+                    <h2>Numbers 1-20</h2>
+                </div>
+                <div class="number-grid">
+                    <!-- Numbers will be inserted here by JavaScript -->
+                </div>
+                <div class="info-text">Click on any number to hear its sound</div>
+                <div class="audio-controls">
+                    <button class="mute-btn">🔊 Sound On</button>
+                </div>
+            </div>
+            
+            <!-- Hindi Alphabet Section -->
+            <div class="section" id="hindi-alphabet">
+                <div class="title-area">
+                    <h2>Hindi Alphabet</h2>
+                </div>
+                <div class="hindi-grid">
+                    <!-- Hindi letters will be inserted here by JavaScript -->
+                </div>
+                <div class="info-text">Click on any letter to hear its sound</div>
+                <div class="audio-controls">
+                    <button class="mute-btn">🔊 Sound On</button>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Created with ❤️ for your little one's learning journey</p>
+        </footer>
+    </div>
+
+    <script>
+        // Main variables
+        let currentSection = 'welcome';
+        let isMuted = false;
+        
+        // Speech synthesis setup
+        const synth = window.speechSynthesis;
+        
+        // Initialize the game
+        document.addEventListener('DOMContentLoaded', () => {
+            // Setup menu buttons
+            setupMenuButtons();
+            
+            // Setup start button
+            document.querySelector('.start-btn').addEventListener('click', () => {
+                showSection('english-alphabet');
+                document.querySelector('.menu-btn[data-section="english-alphabet"]').classList.add('active');
+            });
+            
+            // Initialize alphabet section
+            initializeAlphabet();
+            
+            // Initialize numbers section
+            initializeNumbers();
+            
+            // Initialize Hindi alphabet section
+            initializeHindiAlphabet();
+            
+            // Setup submenu buttons in alphabet section
+            setupSubMenu();
+            
+            // Setup mute buttons
+            setupMuteButtons();
+            
+            // Create confetti for fun
+            createConfetti();
+        });
+        
+        // Setup the main menu buttons
+        function setupMenuButtons() {
+            const menuBtns = document.querySelectorAll('.menu-btn');
+            menuBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    menuBtns.forEach(b => b.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    btn.classList.add('active');
+                    
+                    // Show the selected section
+                    const section = btn.getAttribute('data-section');
+                    showSection(section);
+                });
+            });
+        }
+        
+        // Show the selected section and hide others
+        function showSection(sectionId) {
+            currentSection = sectionId;
+            
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show the selected section
+            const activeSection = document.getElementById(sectionId);
+            if (activeSection) {
+                activeSection.classList.add('active');
+            }
+        }
+        
+        // Initialize the English alphabet section
+        function initializeAlphabet() {
+            const capitalGrid = document.querySelector('.capital-letters');
+            const smallGrid = document.querySelector('.small-letters');
+            
+            // Add capital letters A-Z
+            for (let i = 65; i <= 90; i++) {
+                const letter = String.fromCharCode(i);
+                const card = document.createElement('div');
+                card.className = 'letter-card';
+                card.textContent = letter;
+                card.addEventListener('click', () => {
+                    playSound(letter);
+                    animateBounce(card);
+                });
+                capitalGrid.appendChild(card);
+            }
+            
+            // Add small letters a-z
+            for (let i = 97; i <= 122; i++) {
+                const letter = String.fromCharCode(i);
+                const card = document.createElement('div');
+                card.className = 'letter-card';
+                card.textContent = letter;
+                card.addEventListener('click', () => {
+                    playSound(letter);
+                    animateBounce(card);
+                });
+                smallGrid.appendChild(card);
+            }
+            
+            // Initially hide small letters
+            smallGrid.style.display = 'none';
+        }
+        
+        // Initialize the numbers section
+        function initializeNumbers() {
+            const numberGrid = document.querySelector('.number-grid');
+            
+            // Add numbers 1-20
+            for (let i = 1; i <= 20; i++) {
+                const card = document.createElement('div');
+                card.className = 'number-card';
+                card.textContent = i;
+                card.addEventListener('click', () => {
+                    playSound(i.toString());
+                    animateBounce(card);
+                });
+                numberGrid.appendChild(card);
+            }
+        }
+        
+        // Hindi alphabet - using the most common letters
+        function initializeHindiAlphabet() {
+            const hindiGrid = document.querySelector('.hindi-grid');
+            
+            // Common Hindi vowels and consonants (using a subset for example purposes)
+            const hindiLetters = [
+                'अ', 'आ', 'इ', 'ई', 'उ', 'ऊ', 'ए', 'ऐ', 'ओ', 'औ',
+                'क', 'ख', 'ग', 'घ', 'च', 'छ', 'ज', 'झ', 'ट', 'ठ',
+                'ड', 'ढ', 'त', 'थ', 'द', 'ध', 'न', 'प', 'फ', 'ब',
+                'भ', 'म', 'य', 'र', 'ल', 'व', 'श', 'ष', 'स', 'ह'
+            ];
+            
+            hindiLetters.forEach(letter => {
+                const card = document.createElement('div');
+                card.className = 'hindi-card';
+                card.textContent = letter;
+                card.addEventListener('click', () => {
+                    playSound(letter, 'hi-IN');
+                    animateBounce(card);
+                });
+                hindiGrid.appendChild(card);
+            });
+        }
+        
+        // Setup the submenu in alphabet section
+        function setupSubMenu() {
+            const subMenuBtns = document.querySelectorAll('.sub-menu-btn');
+            const capitalLetters = document.querySelector('.capital-letters');
+            const smallLetters = document.querySelector('.small-letters');
+            
+            subMenuBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    subMenuBtns.forEach(b => b.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    btn.classList.add('active');
+                    
+                    // Show the selected letters
+                    const type = btn.getAttribute('data-type');
+                    if (type === 'capital') {
+                        capitalLetters.style.display = 'grid';
+                        smallLetters.style.display = 'none';
+                    } else {
+                        capitalLetters.style.display = 'none';
+                        smallLetters.style.display = 'grid';
+                    }
+                });
+            });
+        }
+        
+        // Setup mute buttons
+        function setupMuteButtons() {
+            const muteBtns = document.querySelectorAll('.mute-btn');
+            
+            muteBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    isMuted = !isMuted;
+                    
+                    // Update all mute buttons
+                    muteBtns.forEach(b => {
+                        b.innerHTML = isMuted ? '🔇 Sound Off' : '🔊 Sound On';
+                    });
+                });
+            });
+        }
+        
+        // Play sound for the selected item
+        function playSound(text, lang = 'en-US') {
+            if (isMuted) return;
+            
+            // Cancel any ongoing speech
+            synth.cancel();
+            
+            // Create a new utterance
+            const utterance = new SpeechSynthesisUtterance(text);
+            
+            // Set language
+            utterance.lang = lang;
+            
+            // Set a friendly voice if available
+            const voices = synth.getVoices();
+            const preferredVoice = voices.find(voice => voice.lang.includes(lang.substring(0, 2)) && voice.name.includes('Female'));
+            if (preferredVoice) {
+                utterance.voice = preferredVoice;
+            }
+            
+            // Adjust pitch for a more child-friendly sound
+            utterance.pitch = 1.2;
+            
+            // Speak
+            synth.speak(utterance);
+        }
+        
+        // Animate bounce effect on clicked items
+        function animateBounce(element) {
+            element.classList.add('bounce');
+            
+            // Remove the class after animation completes
+            setTimeout(() => {
+                element.classList.remove('bounce');
+            }, 500);
+        }
+        
+        // Create confetti effect for fun
+        function createConfetti() {
+            const confettiCount = 50;
+            const colors = ['#FF5E78', '#58B4FF', '#FFDE59', '#5CDB95', '#FF9E7D', '#B067FF'];
+            
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.width = `${Math.random() * 10 + 5}px`;
+                confetti.style.height = `${Math.random() * 10 + 5}px`;
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.animationDelay = `${Math.random() * 5}s`;
+                confetti.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                
+                document.body.appendChild(confetti);
+                
+                // Remove confetti after animation ends
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>
